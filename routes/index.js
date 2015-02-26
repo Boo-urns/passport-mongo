@@ -69,7 +69,7 @@ module.exports = function(passport){
 	  passport.authenticate('google', { failureRedirect: '/login' }),
 	  function(req, res) {
 	    // Successful authentication, redirect home.
-	    res.redirect('/');
+	    res.redirect('/home');
 	});
 
 
