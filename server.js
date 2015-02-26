@@ -1,4 +1,4 @@
-// BASE SETUP
+// BASE SETUP ---------------------------
 // ======================================
 
 var express         = require('express'); // call express
@@ -23,13 +23,14 @@ var initPassport    = require('./passport/init');
 // Initialize Passport
 initPassport(passport);
 
+
 // Connect to DATABASE -----------------
 mongoose.connect(config.database);
 
 
 
 
-// APP CONFIGURATION
+// APP CONFIGURATION --------------------
 // ======================================
 
 // use body parser so we can grab information from POST requests
@@ -61,22 +62,29 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.use(flash()); // Using the flash middleware provided by connect-flash to store messages in session
+// Using the flash middleware provided by 
+// connect-flash to store messages in session
+app.use(flash()); 
 
 
 
+
+// ROUTES -------------------------------
+// ======================================
 
 var routes = require('./routes/index')(passport);
 app.use('/', routes);
 
-/// catch 404 and forward to error handler
+
+/// CATCH 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
-// development error handler
+
+// Development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
@@ -88,16 +96,11 @@ if (app.get('env') === 'development') {
     });
 }
 
-//module.exports = app;
+
+
+
+// START THE SERVER ---------------------
+// ======================================
+
 app.listen(port);
 console.log('Express listening on port ' + port);
-// #!/usr/bin/env node
-// var debug = require('debug')('passport-mongo');
-// var app = require('../app');
-// var config = require('../config');
-
-// app.set('port', process.env.PORT || config.port);
-
-// var server = app.listen(app.get('port'), function() {
-//   debug('Express server listening on port ' + server.address().port);
-// });
