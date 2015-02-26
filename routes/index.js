@@ -53,7 +53,7 @@ module.exports = function(passport){
 
 	// Redirect the user to Google for authentication.  When complete, Google
 	// will redirect the user back to the application at
-	//     /auth/google/return
+	// /auth/google/callback
 	router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 
 	// Google will redirect the user to this URL after authentication.  Finish
@@ -65,6 +65,22 @@ module.exports = function(passport){
 	    // Successful authentication, redirect home.
 	    res.redirect('/home');
 	});
+
+
+
+	// Redirect the user to Facebook for authentication.  When complete, Facebook
+	// will redirect the user back to the application at
+	// /auth/facebook/callback
+	router.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+
+	// Facebook will redirect the user to this URL after authentication.  Finish
+	// the process by verifying the assertion.  If valid, the user will be
+	// logged in.  Otherwise, authentication has failed.
+	router.get('/auth/facebook/callback', 
+	  passport.authenticate('facebook', { 
+	  	failureRedirect: '/login',
+	  	successRedirect : '/home'
+		}));
 
 
 	return router;
