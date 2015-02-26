@@ -7,7 +7,7 @@ Steps to run the app
 =====================
 * After cloning the repo, install the dependencies by running **npm install**
 * To start the server, run **nodemon server.js** on the base directory
-** If you don't have nodemon npm install -g nodemon
+* If you don't have nodemon ```npm install -g nodemon```
 
 Perquisites
 ============
