@@ -49,6 +49,30 @@ module.exports = function(passport){
 		res.redirect('/');
 	});
 
+
+
+	// Redirect the user to Google for authentication.  When complete, Google
+	// will redirect the user back to the application at
+	//     /auth/google/return
+	router.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+
+	// Google will redirect the user to this URL after authentication.  Finish
+	// the process by verifying the assertion.  If valid, the user will be
+	// logged in.  Otherwise, authentication has failed.
+	// router.get('/auth/google/return', 
+	//   passport.authenticate('google', { successRedirect: '/',
+	//                                     failureRedirect: '/login' }));
+
+
+
+	router.get('/auth/google/callback', 
+	  passport.authenticate('google', { failureRedirect: '/login' }),
+	  function(req, res) {
+	    // Successful authentication, redirect home.
+	    res.redirect('/');
+	});
+
+
 	return router;
 }
 

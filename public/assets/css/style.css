@@ -87,3 +87,7 @@ h1.error-message{
 ul.user-details{
     list-style: none;
 }
+
+.fa {
+    padding-right: 10px;
+}

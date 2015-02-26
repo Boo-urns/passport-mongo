@@ -1,6 +1,9 @@
 var LocalStrategy   = require('passport-local').Strategy;
-var User = require('../models/user');
-var bCrypt = require('bcrypt-nodejs');
+//var GoogleStrategy  = require('passport-google').Strategy;
+var GoogleStrategy  = require('passport-google-oauth').OAuth2Strategy;
+var GooglePlusStrategy = require('passport-google-plus');
+var User            = require('../models/user');
+var bCrypt          = require('bcrypt-nodejs');
 
 module.exports = function(passport){
 
@@ -33,9 +36,59 @@ module.exports = function(passport){
         })
     );
 
-
     var isValidPassword = function(user, password){
         return bCrypt.compareSync(password, user.password);
     }
-    
+
+   
+
+
+
+    passport.use('google', new GoogleStrategy({
+
+        clientID        : '404609311846-b57s49m8kf12ud87u8s4ub4s0v9i09hm.apps.googleusercontent.com',
+        clientSecret    : 'CfRILow9Jeqibml-98tBQf7G',
+        callbackURL     : 'http://localhost:1234/auth/google/callback'
+
+    },
+    function(token, refreshToken, profile, done) {
+
+        // make the code asynchronous
+        // User.findOne won't fire until we have all our data back from Google
+        process.nextTick(function() {
+            //console.log(profile);
+            // try to find the user based on their email
+            User.findOne({ 'email' : profile.emails[0].value }, function(err, user) {
+                if (err)
+                    return done(err);
+
+                if (user) {
+
+                    // if a user is found, log them in
+                    return done(null, user);
+                } else {
+                    // if the user isnt in our database, create a new user
+                    var newUser          = new User();
+
+                    // set all of the relevant information
+                    //newUser.google.id    = profile.id;
+                    //newUser.google.token = token;
+                    newUser.firstName    = profile.name.givenName;
+                    newUser.email        = profile.emails[0].value; // pull the first email
+
+                    console.log(newUser);
+                    // save the user
+                    newUser.save(function(err) {
+                        if (err)
+                            throw err;
+                        return done(null, newUser);
+                    });
+                }
+            });
+        });
+
+    }));
+
+
+  
 }
