@@ -59,12 +59,6 @@ module.exports = function(passport){
 	// Google will redirect the user to this URL after authentication.  Finish
 	// the process by verifying the assertion.  If valid, the user will be
 	// logged in.  Otherwise, authentication has failed.
-	// router.get('/auth/google/return', 
-	//   passport.authenticate('google', { successRedirect: '/',
-	//                                     failureRedirect: '/login' }));
-
-
-
 	router.get('/auth/google/callback', 
 	  passport.authenticate('google', { failureRedirect: '/login' }),
 	  function(req, res) {
