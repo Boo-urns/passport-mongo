@@ -2,7 +2,6 @@
 var LocalStrategy       = require('passport-local').Strategy;
 var GoogleStrategy      = require('passport-google-oauth').OAuth2Strategy;
 var FacebookStrategy    = require('passport-facebook').Strategy;
-var TwitterStrategy     = require('passport-twitter').Strategy;
 
 var User                = require('../models/user');
 var bCrypt              = require('bcrypt-nodejs');
@@ -60,7 +59,7 @@ module.exports = function(passport){
         // make the code asynchronous
         // User.findOne won't fire until we have all our data back from Google
         process.nextTick(function() {
-            //console.log(profile);
+
             // try to find the user based on their email
             User.findOne({ 'email' : profile.emails[0].value }, function(err, user) {
                 if (err)
@@ -75,10 +74,10 @@ module.exports = function(passport){
                     var newUser          = new User();
 
                     // set all of the relevant information
-                    //newUser.google.id    = profile.id;
-                    //newUser.google.token = token;
-                    newUser.firstName    = profile.name.givenName;
-                    newUser.email        = profile.emails[0].value; // pull the first email
+                    newUser.google.id    = profile.id;
+                    newUser.google.token = token;
+                    newUser.google.name  = profile.name.givenName + ' ' + profile.name.familyName;
+                    newUser.google.email = profile.emails[0].value; // pull the first email
 
                     console.log(newUser);
                     // save the user
@@ -111,7 +110,7 @@ module.exports = function(passport){
 
         // asynchronous
         process.nextTick(function() {
-
+            console.log(profile);
             // find the user in the database based on their facebook id
             User.findOne({ 'email' : profile.emails[0].value }, function(err, user) {
 

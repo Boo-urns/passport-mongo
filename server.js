@@ -56,8 +56,8 @@ app.set('view engine', 'jade');
 app.use(morgan('dev'));
 
 
-// om nom nom
-app.use(cookieParser()); 
+// needed for passport to read auth cookies
+app.use(cookieParser());  // om nom nom
 
 
 // set static files location
