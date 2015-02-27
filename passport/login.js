@@ -66,29 +66,44 @@ module.exports = function(passport){
                     return done(err);
 
                 if (user) {
+                    
+                    // if user.google.id === undefined save google data to document
+                    if(user.google.id === undefined) {
+                        saveGoogleData(profile, user);
+                    }
 
+                    console.log('hitting another return');
                     // if a user is found, log them in
                     return done(null, user);
                 } else {
-                    // if the user isnt in our database, create a new user
+
+                    // if the user.email isn't in our database, create a new user
                     var newUser          = new User();
 
-                    // set all of the relevant information
-                    newUser.google.id    = profile.id;
-                    newUser.google.token = token;
-                    newUser.google.name  = profile.name.givenName + ' ' + profile.name.familyName;
-                    newUser.google.email = profile.emails[0].value; // pull the first email
+                    // setting default email as primary index for document.
+                    newUser.email = profile.emails[0].value; 
 
-                    console.log(newUser);
-                    // save the user
-                    newUser.save(function(err) {
-                        if (err)
-                            throw err;
-                        return done(null, newUser);
-                    });
+                    // save the rest of google data and save the new user
+                    saveGoogleData(profile, newUser);
                 }
             });
         });
+
+        var saveGoogleData = function(profile, user) {
+            // set all of the relevant information
+            user.google.id    = profile.id;
+            user.google.token = token;
+            user.google.name  = profile.name.givenName + ' ' + profile.name.familyName;
+            user.google.email = profile.emails[0].value; // pull the first email
+
+            user.save(function(err) {
+                if (err)
+                    throw err;
+
+                console.log('saving google data');
+                return done(null, user);
+            });
+        }
 
     }));
 
@@ -110,8 +125,8 @@ module.exports = function(passport){
 
         // asynchronous
         process.nextTick(function() {
-            console.log(profile);
-            // find the user in the database based on their facebook id
+
+            // try to find the user based on their email
             User.findOne({ 'email' : profile.emails[0].value }, function(err, user) {
 
                 // if there is an error, stop everything and return that
@@ -121,30 +136,46 @@ module.exports = function(passport){
 
                 // if the user is found, then log them in
                 if (user) {
-                    return done(null, user); // user found, return that user
+
+                    // if user.facebook.id === undefined save facebook data to document
+                    if(user.facebook.id === undefined) {
+                        saveFacebookData(profile, user);  
+                    }
+
+                    // user found, return that user
+                    return done(null, user); 
+
                 } else {
-                    // if there is no user found with that facebook id, create them
-                    var newUser            = new User();
 
-                    // set all of the facebook information in our user model
-                    newUser.facebook.id    = profile.id; // set the users facebook id                   
-                    newUser.facebook.token = token; // we will save the token that facebook provides to the user                    
-                    newUser.firstName  = profile.name.givenName
-                    newUser.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                    // if the user.email isn't in our database, create a new user
+                    var newUser   = new User();
 
-                    // save our user to the database
-                    newUser.save(function(err) {
-                        if (err)
-                            throw err;
+                    // setting default email as primary index for document.
+                    newUser.email = profile.emails[0].value;
 
-                        // if successful, return the new user
-                        return done(null, newUser);
-                    });
+                    // save the rest of fb data and save the new user
+                    saveFacebookData(profile, newUser);
+
                 }
 
             });
         });
+        
 
+        var saveFacebookData = function(profile, user) {
+            user.facebook.id    = profile.id; // set the users facebook id                   
+            user.facebook.token = token; // we will save the token that facebook provides
+            user.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName;
+            user.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+
+            user.save(function(err) {
+                if (err)
+                    throw err;
+
+                // if successful, return the new user
+                return done(null, user);
+            });
+        }
     }));
 
 }
