@@ -7,11 +7,11 @@ module.exports = function(passport){
 	passport.use('signup', new LocalStrategy({
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
-        function(req, username, password, done) {
+        function(req, email, password, done) {
 
             findOrCreateUser = function(){
-                // find a user in Mongo with provided username
-                User.findOne({ 'username' :  username }, function(err, user) {
+                // find a user in Mongo with provided email
+                User.findOne({ 'email' :  email }, function(err, user) {
                     // In case of any error, return using the done method
                     if (err){
                         console.log('Error in SignUp: '+err);
@@ -19,7 +19,7 @@ module.exports = function(passport){
                     }
                     // already exists
                     if (user) {
-                        console.log('User already exists with username: '+username);
+                        console.log('User already exists with email: '+email);
                         return done(null, false, req.flash('message','User Already Exists'));
                     } else {
                         // if there is no user with that email
@@ -27,18 +27,18 @@ module.exports = function(passport){
                         var newUser = new User();
 
                         // set the user's local credentials
-                        newUser.username = username;
-                        newUser.password = createHash(password);
-                        newUser.email = req.param('email');
-                        newUser.firstName = req.param('firstName');
+                        newUser.local.password  = createHash(password);
+                        newUser.local.email     = req.param('email');
+                        newUser.email           = newUser.local.email;
                         
+
                         // save the user
                         newUser.save(function(err) {
                             if (err){
                                 console.log('Error in Saving user: '+err);  
                                 throw err;  
                             }
-                            console.log('User Registration succesful');    
+                            console.log('User Registration successful');    
                             return done(null, newUser);
                         });
                     }
@@ -54,11 +54,4 @@ module.exports = function(passport){
     var createHash = function(password){
         return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
     }
-
-
-
-    var passport = require('passport')
-  , GoogleStrategy = require('passport-google').Strategy;
-
-
 }

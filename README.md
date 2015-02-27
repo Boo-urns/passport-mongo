@@ -11,4 +11,4 @@ Steps to run the app
 
 Perquisites
 ============
-The server assumes that you have a local mongo instance running. This means if you have mongo installed locally, all you need to do is configure the config.js file correctly and run the mongod daemon
+The server assumes that you have a local mongo instance running. This means if you have mongo installed locally, all you need to do is configure the config/config.js file correctly and run the mongod daemon

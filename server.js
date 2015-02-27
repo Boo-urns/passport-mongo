@@ -10,14 +10,14 @@ var cookieParser    = require('cookie-parser');
 var bodyParser      = require('body-parser');
 var flash           = require('connect-flash'); // store and display messages in templates
 
-var config          = require('./config'); // our config file
+var config          = require('./config/config'); // our config file {db, port, secret}
 var port            = config.port; // set the port for our app
 var mongoose        = require('mongoose'); // for working w/ our database
 
 var passport        = require('passport'); // unobtrusive authentication middleware (local, oauth etc)
 var expressSession  = require('express-session');
 var superSecret     = config.secret; // secret used to create tokens
-var initPassport    = require('./passport/init'); 
+var initPassport    = require('./config/passport'); 
 
 
 // Initialize Passport
@@ -48,7 +48,7 @@ app.use(bodyParser.json());
 
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'public/app/views'));
 app.set('view engine', 'jade');
 
 
@@ -81,7 +81,7 @@ app.use(flash());
 // ROUTES -------------------------------
 // ======================================
 
-var routes = require('./routes/index')(passport);
+var routes = require('./public/app/routes/index')(passport);
 app.use('/', routes);
 
 
