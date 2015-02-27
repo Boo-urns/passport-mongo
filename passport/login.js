@@ -4,6 +4,7 @@ var GoogleStrategy      = require('passport-google-oauth').OAuth2Strategy;
 var FacebookStrategy    = require('passport-facebook').Strategy;
 
 var User                = require('../models/user');
+var configAuth          = require('../config/auth')
 var bCrypt              = require('bcrypt-nodejs');
 
 module.exports = function(passport){
@@ -49,9 +50,9 @@ module.exports = function(passport){
 
     passport.use('google', new GoogleStrategy({
 
-        clientID        : '404609311846-b57s49m8kf12ud87u8s4ub4s0v9i09hm.apps.googleusercontent.com',
-        clientSecret    : 'CfRILow9Jeqibml-98tBQf7G',
-        callbackURL     : 'http://localhost:1234/auth/google/callback'
+        clientID        : configAuth.googleAuth.clientID,
+        clientSecret    : configAuth.googleAuth.clientSecret,
+        callbackURL     : configAuth.googleAuth.callbackURL
 
     },
     function(token, refreshToken, profile, done) {
@@ -114,9 +115,9 @@ module.exports = function(passport){
     passport.use('facebook', new FacebookStrategy({
 
         // pull in our app id and secret from our auth.js file
-        clientID        : '437910229706460',
-        clientSecret    : '67c6dd57caaff1bda2aae8e745a94dc7',
-        callbackURL     : 'http://localhost:1234/auth/facebook/callback'
+        clientID        : configAuth.facebookAuth.clientID,
+        clientSecret    : configAuth.facebookAuth.clientSecret,
+        callbackURL     : configAuth.facebookAuth.callbackURL
 
     },
 
