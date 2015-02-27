@@ -1,7 +1,9 @@
+// PASSPORT STRATEGIES
 var LocalStrategy       = require('passport-local').Strategy;
-//var GoogleStrategy  = require('passport-google').Strategy;
 var GoogleStrategy      = require('passport-google-oauth').OAuth2Strategy;
 var FacebookStrategy    = require('passport-facebook').Strategy;
+var TwitterStrategy     = require('passport-twitter').Strategy;
+
 var User                = require('../models/user');
 var bCrypt              = require('bcrypt-nodejs');
 
@@ -95,7 +97,7 @@ module.exports = function(passport){
 
     // FACEBOOK LOGIN -------------
     // ============================
-    passport.use(new FacebookStrategy({
+    passport.use('facebook', new FacebookStrategy({
 
         // pull in our app id and secret from our auth.js file
         clientID        : '437910229706460',
